@@ -15,22 +15,26 @@ function parseCSVChunk(chunk, header) {
   if (header) {
     const keys = lines.shift();
     generateJSON(lines, keys.split(','));
-  } else generateJSON(lines.split(','));
+  } else generateJSON(lines);
 }
 
 function generateJSON(lines, keys) {
   let i = 0;
   for (const line of lines) {
     const stringArray = line.split(',');
-    const object = new Object();
+    let object = new Object();
     i = 0;
     for (const str of stringArray) {
-      Object.defineProperty(object, keys[i++], {
-        value: str,
-        writable: true,
-        enumerable: true,
-        configurable: true,
-      });
+      if (keys !== undefined && keys.length > 0) {
+        Object.defineProperty(object, keys[i++], {
+          value: str,
+          writable: true,
+          enumerable: true,
+          configurable: true,
+        });
+      } else {
+        object = stringArray;
+      }
     }
     JsonData.push(object);
   }
@@ -51,14 +55,12 @@ class createObjectStream extends Readable {
   }
 }
 
-const parse = () => {
-  let header = true;
-  async function(){
-    for await (const chunk of reader) {
-      parseCSVChunk(chunk, header);
-      header = false;
-    }
-  }();
+const parse = async () => {
+  let header = false;
+  for await (const chunk of reader) {
+    parseCSVChunk(chunk, header);
+    header = false;
+  }
   return new createObjectStream(JsonData);
 };
 
