@@ -20,10 +20,35 @@ const JSONParser = require("../json2csv");
 //   }
 // ).on('data', (chunk) => console.log(JSON.stringify(chunk)));
 
-const jsonParser = new JSONParser("./test.json", {
-  is_file: true,
-  delimeter: ":",
-});
-jsonParser.on("data", (chunk) => {
-  console.log("this", chunk);
+// new JSONParser("./test.json", {
+//   is_file: true,
+//   delimeter: "\t",
+// }).on("data", (chunk) => {
+//   console.log(chunk);
+// });
+
+new JSONParser(
+  `[
+  {
+    "name": "Prashant Singh",
+    "phone": "1234",
+    "address": {
+      "line1": "whatever",
+      "line2": "again",
+      "meri": {
+        "key": "key"
+      }
+    }
+  },
+  {
+    "name": "Sonu Tiwari",
+    "phone": "1234"
+  }
+]`,
+  {
+    is_file: false,
+    delimeter: "\t",
+  }
+).on("data", (chunk) => {
+  console.log(chunk);
 });

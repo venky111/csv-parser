@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { Readable, Stream } = require("stream");
+const { Readable } = require("stream");
 const path = require("path");
 
 class JSONParser extends Readable {
@@ -14,7 +14,15 @@ class JSONParser extends Readable {
     super({ jsonObjectOrPathString, ...options, objectMode: true });
     this.jsonObjectOrPathString = jsonObjectOrPathString;
     this.options = options;
+    if (options.is_file)
+      this.fileStream = fs.createReadStream(
+        path.join(__dirname, jsonObjectOrPathString),
+        {
+          encoding: this.options.encoding || "utf-8",
+        }
+      );
   }
+
   /**
    * Parse JSON To CSV.
    * @param {string} chunk JSON String.
@@ -22,7 +30,7 @@ class JSONParser extends Readable {
    * @returns {string} CSV String.
    */
   parseJsonToCSV(chunk, options = {}) {
-    var array = typeof chunk !== "object" ? JSON.parse(chunk) : [chunk];
+    var array = Array.isArray(chunk) ? chunk : [chunk];
     const header = new Set();
     var str = "";
     for (var i = 0; i < array.length; i++) {
@@ -51,25 +59,26 @@ class JSONParser extends Readable {
    */
   _read() {
     if (this.options.is_file) {
-      const fileStream = fs.createReadStream(
-        path.join(__dirname, this.jsonObjectOrPathString),
-        {
-          encoding: this.options.encoding || "utf-8",
-        }
-      );
       let flag = true;
-      fileStream.on("data", (chunk) => {
-        const csvChunk = this.parseJsonToCSV(chunk, this.options);
+      this.fileStream.on("data", (chunk) => {
+        const csvChunk = this.parseJsonToCSV(JSON.parse(chunk), this.options);
         if (flag) {
           this.push([...csvChunk[0]].join(this.options.delimeter));
           flag = false;
         }
         this.push(csvChunk[1]);
       });
-      fileStream.on("close", () => {
+      this.fileStream.on("close", () => {
         this.push(null);
       });
     } else {
+      const csvChunk = this.parseJsonToCSV(
+        JSON.parse(this.jsonObjectOrPathString),
+        this.options
+      );
+      this.push([...csvChunk[0]].join(this.options.delimeter));
+      this.push(csvChunk[1]);
+      this.push(null);
     }
   }
 }
