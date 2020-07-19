@@ -1,8 +1,9 @@
-const fs = require('fs');
-const { Readable } = require('stream');
+const fs = require("fs");
+const { Readable } = require("stream");
+const path = require("path");
 
-const reader = fs.createReadStream('./sample.csv', {
-  encoding: 'utf8',
+const reader = fs.createReadStream("./utils/sample.csv", {
+  encoding: "utf8",
 });
 
 const jsonData = [];
@@ -20,7 +21,7 @@ function parseCSVChunk(chunk, header) {
   // Create key value pair if header is valid
   if (header) {
     const keys = lines.shift();
-    generateJSON(lines, keys.split(','));
+    generateJSON(lines, keys.split(","));
   } else generateJSON(lines); // Else simply create json without keys.
 }
 
@@ -32,7 +33,7 @@ function parseCSVChunk(chunk, header) {
 function generateJSON(lines, keys) {
   let i = 0;
   for (const line of lines) {
-    const stringArray = line.split(',');
+    const stringArray = line.split(",");
     let object = new Object();
     i = 0;
     for (const str of stringArray) {
@@ -85,4 +86,54 @@ const parse = async () => {
   return new CreateObjectStream(jsonData);
 };
 
-module.exports.parse = parse;
+class JSONParser extends Readable {
+  constructor(
+    jsonObjectOrPathString,
+    options = {
+      encoding: "utf-8",
+      is_file: false,
+    }
+  ) {
+    super(jsonObjectOrPathString, options);
+    this.jsonObjectOrPathString = jsonObjectOrPathString;
+    this.options = options;
+  }
+  /**
+   * Parse JSON To CSV.
+   * @param {string} chunk JSON String.
+   * @returns {string} CSV String.
+   */
+  parseJsonToCSV(chunk) {
+    var array = typeof chunk !== "object" ? JSON.parse(chunk) : chunk;
+    var str = "";
+    for (var i = 0; i < array.length; i++) {
+      var line = "";
+      for (var index in array[i]) {
+        if (line !== "") line += ",";
+        line += array[i][index];
+      }
+      str += line + "\r\n";
+    }
+    return str;
+  }
+  _read() {
+    if (this.options.is_file) {
+      const fileStream = fs.createReadStream(this.jsonObjectOrPathString, {
+        encoding: this.options.encoding || "utf-8",
+      });
+      fileStream.on("data", (chunk) => {
+        const csvChunk = this.parseJsonToCSV(chunk);
+        console.log(csvChunk);
+      });
+    } else {
+    }
+  }
+}
+
+const jsonParser = new JSONParser(path.join(__dirname, "./test.json"), {
+  is_file: true,
+});
+jsonParser.on("data", (chunk) => {
+  console.log("this", chunk);
+});
+//module.exports.parse = parse;
