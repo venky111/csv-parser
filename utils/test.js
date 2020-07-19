@@ -1,11 +1,12 @@
-const { parse } = require('../index');
+const { parse } = require("../index");
+const JSONParser = require("../json2csv");
 
-parse('./sample.csv', {
-  header: false,
-  isRemoteUrl: false,
-  isData: false,
-  separator: ',',
-}).on('data', (chunk) => console.log(JSON.stringify(chunk)));
+// parse("./sample.csv", {
+//   header: false,
+//   isRemoteUrl: false,
+//   isData: false,
+//   separator: ",",
+// }).on("data", (chunk) => console.log(JSON.stringify(chunk)));
 
 // csv string is faster than reading csv from file
 
@@ -18,3 +19,11 @@ parse('./sample.csv', {
 //     separator: ',',
 //   }
 // ).on('data', (chunk) => console.log(JSON.stringify(chunk)));
+
+const jsonParser = new JSONParser("./test.json", {
+  is_file: true,
+  delimeter: ":",
+});
+jsonParser.on("data", (chunk) => {
+  console.log("this", chunk);
+});

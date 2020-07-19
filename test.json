@@ -1,8 +1,17 @@
 [
-    {
-        "name": "Prashant Singh"
-    },
-    {
-        "name": "Sonu Tiwari"
+  {
+    "name": "Prashant Singh",
+    "phone": "1234",
+    "address": {
+      "line1": "whatever",
+      "line2": "again",
+      "meri": {
+        "key": "key"
+      }
     }
+  },
+  {
+    "name": "Sonu Tiwari",
+    "phone": "1234"
+  }
 ]
