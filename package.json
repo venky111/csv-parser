@@ -3,5 +3,11 @@
   "version": "1.0.0",
   "description": "create a csv parser module to convert csv file/strings into JSON objects using streams",
   "main": "index.js",
-  "license": "MIT"
+  "scripts": {
+    "test": "jest"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^26.0.1"
+  }
 }
