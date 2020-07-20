@@ -23,7 +23,7 @@ CSV
  - Default value : false
 
 **isRemoteUrl**
- - Its a boolean to to represent if filepath passed is remote.
+ - Its a boolean to represent if filepath passed is remote.
  - Default value : false
 
 **isData**
@@ -31,7 +31,7 @@ CSV
  - Default value : false
 
 **separator**
- - Its string takes the separator used in csv to separate data
+ - Its a string takes the separator used in csv to separate data
  - Default value : ','
 
 **destination**
