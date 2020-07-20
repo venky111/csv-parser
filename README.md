@@ -8,41 +8,41 @@ CSV
 
 ## Methods
 
-1.toJSON
-2.parse
+### toJSON
+### parse
 
 ## Parameters
 
 ### toJSON
 
-- filePath
-- Its a string takes data/CSV data file path.
+ **filePath**
+ - Its a string takes data/CSV data file path.
 
-- header
-- Its a boolean to represent whether first line should be taken for keys.
-- Default value : false
+**header**
+ - Its a boolean to represent whether first line should be taken for keys.
+ - Default value : false
 
-- isRemoteUrl
-- Its a boolean to to represent if filepath passed is remote.
-- Default value : false
+**isRemoteUrl**
+ - Its a boolean to to represent if filepath passed is remote.
+ - Default value : false
 
-- isData
-- Its a boolean to represent if value passed in filepath is data or filepath
-- Default value : false
+**isData**
+ - Its a boolean to represent if value passed in filepath is data or filepath
+ - Default value : false
 
-- separator
-- Its string takes the separator used in csv to separate data
-- Default value : ','
+**separator**
+ - Its string takes the separator used in csv to separate data
+ - Default value : ','
 
-- destination
-- It takes destination/output file path.
+**destination**
+ - It takes destination/output file path.
 
-- transformHeader
-- takes array of keys/function to transform header in input
+**transformHeader**
+ - takes array of keys/function to transform header in input
 
 ## Example 1:
 
-const { CSV } = require('csv');
+```const { CSV } = require('csv');
 const fs = require('fs');
 
 const result = CSV.toJSON('../testdata/sample.csv', {
@@ -54,15 +54,12 @@ destination: '../testdata/output.txt',
 transformHeader: (header) => header.toUpperCase(),
 });
 
-if (result instanceof Error) console.log(result.message);
-else result.pipe(process.stdout);
+result.pipe(process.stdout);```
 
-if (result instanceof Error) console.log(result.message);
-else result.on('data', (chunk) => console.log(chunk));
 
 ## Example 2:
 
-const { CSV } = require('csv');
+```const { CSV } = require('csv');
 const fs = require('fs');
 
 CSV.toJSON(
@@ -77,4 +74,4 @@ separator: ';', // customHeader: ['customHeader1', 'customHeader2', 'customHeade
 .on('data', (chunk) => console.log(chunk))
 .on('error', (err) => {
 console.log(err.message);
-});
+});```
