@@ -60,8 +60,9 @@ class CreateObjectStream extends Transform {
       if (keys) keys = keys.split(separator);
       if (typeof transformHeader === 'function') {
         keys = keys.map((key) => transformHeader(key));
-      } else if (Array.isArray(transformHeader));
-      keys = transformHeader;
+      } else if (Array.isArray(transformHeader)) {
+        keys = transformHeader;
+      }
       this.header = false;
     }
     chunkJsonData = parseCSVChunk(chunk, keys, this.options);
