@@ -45,8 +45,6 @@ describe('CSV.ToJSON', () => {
         isData: true,
         separator: ',',
         isRemoteUrl: false,
-        destination:
-          'E:\\the office\\venky\\work\\PestoAssignments\\deep-dive\\CSVParser\\csv-parser\\utils\\testdata\\output.txt',
       });
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
